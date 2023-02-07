@@ -1,0 +1,21 @@
+{
+  "name": "vue-mini",
+  "version": "1.0.0",
+  "description": "vue3 mini实现",
+  "main": "index.js",
+  "scripts": {
+    "build": "node ./build/index.js src output",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/18boys/vue-mini.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/18boys/vue-mini/issues"
+  },
+  "homepage": "https://github.com/18boys/vue-mini#readme"
+}
