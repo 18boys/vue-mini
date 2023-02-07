@@ -10,6 +10,7 @@ const effectStack = [];
  * @constructor
  */
 function ref(data) {
+  let isCollect = true;
   const p = new Proxy(data, {
     get(target, key) {
       // 依赖收集, 将副作用收集到副作用bucket中
@@ -24,12 +25,17 @@ function ref(data) {
       }
       depsMap.get(key).deps.push(activeEffect);
       p.__raw__ = target;
+      if(typeof target[key] === 'object'){
+        isCollect = false;
+        p[key] = ref(target[key]) // 直接在get中设置会导致死循环,因此收集过程不触发副作用
+        isCollect = true;
+      }
       return target[key];
     },
     set(target, key, value) {
       if (key === '__raw__') return; // 防止设置的时候死循环
       target[key] = value;
-      if (!bucket.get(target) || !bucket.get(target).get(key)) return;
+      if (!bucket.get(target) || !bucket.get(target).get(key) || !isCollect) return;
       const rectObj = bucket.get(target).get(key);
       rectObj.deps.map(effect => effect());
     },
