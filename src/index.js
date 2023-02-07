@@ -28,4 +28,4 @@ computed(function add() {
   return refObj.a + refObj.b;
 });
 
-refObj.a ++
+refObj.a++
