@@ -24,8 +24,8 @@ refObj.subObj.subName = 'hello';
 // 核心就是实现传入一个get函数
 
 computed(function add() {
-  console.log('computed重新计算');
-  return refObj.a + 1;
+  console.log('computed重新计算', refObj.a + refObj.b);
+  return refObj.a + refObj.b;
 });
 
 refObj.a ++
