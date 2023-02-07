@@ -1,4 +1,4 @@
-const { ref, effect } = require('vue.js');
+const { ref, effect, computed } = require('vue.js');
 
 const refObj = ref({
   switch: true,
@@ -6,6 +6,8 @@ const refObj = ref({
   subObj: {
     subName: 'subName',
   },
+  a: 1,
+  b: 2,
 });
 
 function log() {
@@ -16,3 +18,14 @@ function log() {
 effect(log);
 
 refObj.subObj.subName = 'hello';
+
+
+// computed实现
+// 核心就是实现传入一个get函数
+
+computed(function add() {
+  console.log('computed重新计算');
+  return refObj.a + 1;
+});
+
+refObj.a ++
