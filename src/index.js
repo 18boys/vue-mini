@@ -1,7 +1,9 @@
 const { ref, effect } = require('vue.js');
 
 const refObj = ref({
-  name: 'hello',
+  switch: true,
+  name: 'name',
+  id: 'id',
 });
 
 function log() {

@@ -16,17 +16,21 @@ function ref(data) {
       if (!effectStack.length) return target[key];
       const activeEffect = effectStack[effectStack.length - 1];
       if (!bucket.get(target)) { // 注意这里需要用get而不是能直接设置属性,否则key不为对象
-        bucket.set(target, {})
-        bucket.get(target).deps = [];
+        bucket.set(target, new Map());
       }
-      bucket.get(target).deps.push(activeEffect);
+      const depsMap = bucket.get(target);
+      if (!depsMap.get(key)) {
+        depsMap.set(key, { deps: [] });
+      }
+      depsMap.get(key).deps.push(activeEffect);
+      p.__raw__ = target;
       return target[key];
     },
     set(target, key, value) {
-      if(key === '__raw__') return target;
+      if (key === '__raw__') return; // 防止设置的时候死循环
       target[key] = value;
-      if (!bucket.get(target)) return;
-      const rectObj = bucket.get(target);
+      if (!bucket.get(target) || !bucket.get(target).get(key)) return;
+      const rectObj = bucket.get(target).get(key);
       rectObj.deps.map(effect => effect());
     },
   });
