@@ -29,5 +29,3 @@ function require(file) {
   return cacheModules[fileName].exports;
 }
 
-
-// window.require = require;

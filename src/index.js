@@ -1,7 +1,14 @@
-const ref = require('vue.js')
+const { ref, effect } = require('vue.js');
 
-console.log('ref',ref)
 const refObj = ref({
-  name: 'hello'
-})
-console.log('ref的值', refObj.name)
+  name: 'hello',
+});
+
+function log() {
+  console.log('ref的值', refObj.name);
+}
+
+// 希望设置的之后能够将console的动作执行一遍
+effect(log);
+
+refObj.name = 'world';

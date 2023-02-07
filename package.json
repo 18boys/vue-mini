@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "node ./build/index.js src output",
+    "watch": "npx watch -p \"src/*.js\" -c \"npm run build\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -17,5 +18,10 @@
   "bugs": {
     "url": "https://github.com/18boys/vue-mini/issues"
   },
-  "homepage": "https://github.com/18boys/vue-mini#readme"
+  "homepage": "https://github.com/18boys/vue-mini#readme",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "watch-cli": "^0.2.3"
+  }
 }
