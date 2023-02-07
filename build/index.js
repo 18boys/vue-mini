@@ -14,9 +14,9 @@ const sourceAbsolutePath = path.join(rootPath, sourcePath);
 const outputAbsolutePath = path.join(rootPath, outputPath);
 const files = fs.readdirSync(sourceAbsolutePath);
 
+// let bundle = fs.readFileSync(__dirname + '/bootstrap.js');
 let bundle = '';
-
-/**
+  /**
  * 文件包装
  * @param file
  * @returns {string}
@@ -36,7 +36,7 @@ files.map((file) => {
   bundle = ` ${bundle} \n // ***** 打包信息记录: filename = ${file} 文件开始 ***** \n   ${fileContent}  \n // ***** 打包信息记录: filename = ${file} 文件结束 *****  \n`;
 });
 
-bundle = `${bundle} \n  index()`
+bundle = `${bundle} \n  require('index')`
 
 // 输出最终文件
 if (fs.existsSync(outputAbsolutePath)) {
