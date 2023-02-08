@@ -29,15 +29,30 @@ computed(function add() {
   return refObj.a + refObj.b;
 });
 
-refObj.a++
+refObj.a++;
 
 
 // watch的核心实现
 const watchObj = ref({
-  watchValue: 'watch'
-})
-watch(watchObj, ()=>{
-  console.log('watch 被触发了')
-} )
+  watchValue: 'watch',
+});
+watch(watchObj, () => {
+  console.log('watch 被触发了');
+});
 
-watchObj.watchValue = "watch trigger"
+watchObj.watchValue = 'watch trigger';
+
+// 数组监听
+const arr = [1, 2, 3];
+const arrRef = ref(arr);
+
+effect(() => {
+
+  console.log('arrRef副作用执行', arrRef.join('|'));
+});
+arrRef[7] = 7;
+arrRef[9] = 9;
+arrRef.length = 3;
+arrRef.push(6); // 有重复执行副作用的问题(会执行 length两次以及key=3时候)
+
+
