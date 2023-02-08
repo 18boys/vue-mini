@@ -29,7 +29,7 @@ function ref(data) {
         depsMap.get(key).deps.push(activeEffect);
         p.__raw__ = target;
         if (typeof target[key] === 'object') {
-          p[key] = ref(target[key]); // 直接在get中设置会导致死循环,因此收集过程不触发副作用,设置isCollecting
+          p[key] = ref(target[key]); // 直接在get中设置会导致触发set从而死循环,因此收集过程不触发副作用,设置isCollecting
         }
       }
       return target[key];
@@ -39,17 +39,32 @@ function ref(data) {
       target[key] = value;
       if (!bucket.get(target) || !bucket.get(target).get(key) || isCollecting) return;
       const rectObj = bucket.get(target).get(key);
-      rectObj.deps.map(effect => effect());
+      rectObj.deps.map(effect => {
+        if(effect.options.scheduler){
+          effect.options.scheduler()
+        }else {
+          effect()
+        }
+      });
     },
   });
   return p;
 }
 
+function createEffectFun(fn, options){
+  const effectFun = ()=>{
+    fn()
+  }
+  effectFun.options = options;
+  return effectFun
+}
 
-function effect(fn) {
-  effectStack.push(fn);
+
+function effect(fn, options={}) {
+  const effectFun = createEffectFun(fn, options)
+  effectStack.push(effectFun);
   isCollecting = true;
-  fn(); // 执行收集动作
+  effectFun(); // 执行收集动作
   isCollecting = false;
   effectStack.pop();
   activeEffect = null;
@@ -59,8 +74,26 @@ function computed(getter) {
   effect(getter);
 }
 
+function traverser(obj, seen=(new Set())){
+  if(typeof obj !== 'object' || obj === null || seen.has(obj)) return
+  for(let k in obj){
+    seen.add(obj[k]) // 触发访问,收集副作用
+    traverser(obj[k], seen)
+  }
+}
+function watch(obj, cb){
+  // 强制建立对象的key和副作用函数的关联关系,之前是副作用函数的时候
+  // 循环遍历读取obj的值,这里obj只考虑原始值,非响应类型的情况
+  effect(()=> traverser(obj), {
+    scheduler(){
+      cb()
+    }
+  })
+}
+
 module.exports = {
   ref,
   effect,
   computed,
+  watch,
 };

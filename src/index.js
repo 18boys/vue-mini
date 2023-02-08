@@ -1,4 +1,4 @@
-const { ref, effect, computed } = require('vue.js');
+const { ref, effect, computed, watch } = require('vue.js');
 
 const refObj = ref({
   switch: true,
@@ -8,6 +8,7 @@ const refObj = ref({
   },
   a: 1,
   b: 2,
+  watchObj: 'watch',
 });
 
 function log() {
@@ -29,3 +30,14 @@ computed(function add() {
 });
 
 refObj.a++
+
+
+// watch的核心实现
+const watchObj = ref({
+  watchValue: 'watch'
+})
+watch(watchObj, ()=>{
+  console.log('watch 被触发了')
+} )
+
+watchObj.watchValue = "watch trigger"
